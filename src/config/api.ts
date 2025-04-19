@@ -43,9 +43,9 @@ export interface LocalArtwork {
 
 // Map our local development artwork IDs to local image files
 const LOCAL_IMAGE_MAP: Record<number, string> = {
-	2: 'img1', // The Old Guitarist
-	3: 'img2', // Woman with a Parasol
-	1: 'img3', // A Sunday on La Grande Jatte
+	2: '/api-data/images/img1.jpg', // The Old Guitarist
+	3: '/api-data/images/img2.jpg', // Woman with a Parasol
+	1: '/api-data/images/img3.jpg', // A Sunday on La Grande Jatte
 };
 
 // Original Art Institute image IDs for fallback
@@ -143,12 +143,14 @@ export const getLocalArtworkData = async (
 
 const API_BASE_URL = 'https://api.artic.edu/api/v1';
 
-export async function getArtworkData(searchTerm: string) {
+export async function getArtworkData(
+	searchTerm: string,
+): Promise<LocalArtwork[]> {
 	try {
 		const response = await fetch(
 			`${API_BASE_URL}/artworks/search?q=${encodeURIComponent(
 				searchTerm,
-			)}&fields=id,title,image_id,date_display,artist_display`,
+			)}&fields=id,title,artist_title,medium_display,description,image_id,dimensions_detail,thumbnail`,
 		);
 
 		if (!response.ok) {
@@ -163,7 +165,7 @@ export async function getArtworkData(searchTerm: string) {
 			throw new Error('Invalid response format from API');
 		}
 
-		return data.data;
+		return data.data.map((item: ApiArtwork) => processArtwork(item));
 	} catch (error) {
 		console.error('Error fetching artwork data:', error);
 		throw new Error(
@@ -173,10 +175,20 @@ export async function getArtworkData(searchTerm: string) {
 }
 
 export const getImageUrl = (imageId: string) => {
-	return `https://www.artic.edu/iiif/2/${imageId}/full/843,/0/default.jpg`;
+	// Check if we're in development and have a local image
+	if (isDevelopment) {
+		const localImage = LOCAL_IMAGE_MAP[Number(imageId)];
+		if (localImage) {
+			return localImage;
+		}
+	}
+
+	// Fallback to Art Institute image
+	const artInstituteId = ART_INSTITUTE_IMAGE_MAP[Number(imageId)] || imageId;
+	return `https://www.artic.edu/iiif/2/${artInstituteId}/full/843,/0/default.jpg`;
 };
 
-export const handleApiError = (error: any) => {
+export const handleApiError = (error: Error | unknown) => {
 	console.error('API Error:', error);
 	throw new Error('An error occurred while fetching data. Please try again.');
 };
@@ -184,8 +196,7 @@ export const handleApiError = (error: any) => {
 export const getFeaturedArtworks = async (): Promise<LocalArtwork[]> => {
 	try {
 		// Try API first
-		const apiUrl =
-			'https://api.artic.edu/api/v1/artworks?fields=id,title,artist_title,medium_display,description,image_id,dimensions_detail&limit=3';
+		const apiUrl = `${API_CONFIG.BASE_URL}/artworks?fields=id,title,artist_title,medium_display,description,image_id,dimensions_detail,thumbnail&limit=3`;
 		const response = await fetchWithTimeout(apiUrl, API_TIMEOUT);
 		const data = await response.json();
 
@@ -206,5 +217,5 @@ export const getApiUrl = (endpoint: keyof typeof API_CONFIG) => {
 };
 
 export const getDetailImageUrl = (imageId: string) => {
-	return getImageUrl(imageId, 1686);
+	return getImageUrl(imageId);
 };

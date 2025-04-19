@@ -35,14 +35,8 @@ export function FeaturedArtworks({
 					{artworks.map((artwork) => (
 						<ArtCard
 							key={artwork.id}
-							imageId={artwork.image_id}
-							title={artwork.title}
-							artist={artwork.artist_title || 'Unknown Artist'}
-							artworkId={artwork.id}
+							artwork={artwork}
 							onSelect={onArtworkSelect}
-							alt={artwork.thumbnail?.alt_text}
-							width={artwork.width}
-							height={artwork.height}
 						/>
 					))}
 				</div>
