@@ -1,0 +1,8 @@
+{
+	"servers": {
+		"artic-museum": {
+			"command": "npx",
+			"args": ["-y", "artic-mcp"]
+		}
+	}
+}
