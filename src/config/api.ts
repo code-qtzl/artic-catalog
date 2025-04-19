@@ -147,13 +147,18 @@ export async function getArtworkData(
 	searchTerm: string,
 ): Promise<LocalArtwork[]> {
 	try {
-		const response = await fetch(
+		const response = await fetchWithTimeout(
 			`${API_BASE_URL}/artworks/search?q=${encodeURIComponent(
 				searchTerm,
-			)}&fields=id,title,artist_title,medium_display,description,image_id,dimensions_detail,thumbnail`,
+			)}&fields=id,title,artist_title,medium_display,description,image_id,dimensions_detail,thumbnail&limit=20`,
+			API_TIMEOUT,
 		);
 
 		if (!response.ok) {
+			if (isDevelopment) {
+				// In development, fall back to local data
+				return getLocalArtworkData(searchTerm);
+			}
 			throw new Error(
 				`API request failed with status ${response.status}`,
 			);
@@ -162,12 +167,32 @@ export async function getArtworkData(
 		const data = await response.json();
 
 		if (!data.data || !Array.isArray(data.data)) {
+			if (isDevelopment) {
+				return getLocalArtworkData(searchTerm);
+			}
 			throw new Error('Invalid response format from API');
 		}
 
-		return data.data.map((item: ApiArtwork) => processArtwork(item));
+		const processedArtworks: (LocalArtwork | null)[] = data.data.map(
+			(item: ApiArtwork) => {
+				try {
+					return processArtwork(item);
+				} catch (error) {
+					console.error('Error processing artwork:', error);
+					return null;
+				}
+			},
+		);
+
+		return processedArtworks.filter(
+			(artwork): artwork is LocalArtwork => artwork !== null,
+		);
 	} catch (error) {
 		console.error('Error fetching artwork data:', error);
+		if (isDevelopment) {
+			// In development, try local data as fallback
+			return getLocalArtworkData(searchTerm);
+		}
 		throw new Error(
 			'Failed to fetch artwork data. Please try again later.',
 		);

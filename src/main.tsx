@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { CustomThemeProvider } from '@/components/ThemeProvider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import App from './App.tsx';
 import './index.css';
 
@@ -13,7 +14,9 @@ const root = createRoot(container);
 root.render(
 	<React.StrictMode>
 		<CustomThemeProvider defaultTheme='system' storageKey='artic-theme'>
-			<App />
+			<TooltipProvider>
+				<App />
+			</TooltipProvider>
 		</CustomThemeProvider>
 	</React.StrictMode>,
 );

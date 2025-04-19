@@ -81,128 +81,18 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 	const [featuredArtworks, setFeaturedArtworks] = useState<LocalArtwork[]>(
 		[],
 	);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 	const [searching, setSearching] = useState(false);
-	const [hasMore, setHasMore] = useState(true);
-	const loadingRef = useRef<HTMLTableRowElement | null>(null);
+	const searchTimeoutRef = useRef<number>();
 
-	const loadMoreResults = useCallback(async () => {
-		if (searching || !hasMore || searchTerm.length < 2) return;
-
-		setSearching(true);
-		try {
-			const newResults = await getArtworkData(searchTerm);
-
-			if (newResults.length > 0) {
-				const processedResults = newResults.map(
-					(item: LocalArtwork) => ({
-						...item,
-						matchScore: calculateMatchScore(item, searchTerm),
-					}),
-				);
-
-				const uniqueResults = processedResults.filter(
-					(newItem: SearchResult) =>
-						!searchResults.some(
-							(existing) => existing.id === newItem.id,
-						),
-				);
-
-				if (uniqueResults.length > 0) {
-					setSearchResults((prev) => {
-						const combined = [...prev, ...uniqueResults];
-						combined.sort(
-							(a, b) => (b.matchScore || 0) - (a.matchScore || 0),
-						);
-						return combined;
-					});
-				}
-
-				setHasMore(uniqueResults.length > 0);
-			} else {
-				setHasMore(false);
-			}
-		} catch (error) {
-			console.error('Search error:', error);
-			setError(
-				error instanceof Error
-					? error.message
-					: 'Failed to load more results',
-			);
-			setHasMore(false);
-		} finally {
-			setSearching(false);
-		}
-	}, [searchTerm, searching, hasMore, searchResults]);
-
-	useEffect(() => {
-		const options = {
-			root: document.querySelector('.scroll-area-viewport'),
-			threshold: 0.1,
-		};
-
-		const observer = new IntersectionObserver((entries) => {
-			const target = entries[0];
-			if (target.isIntersecting && !searching && hasMore) {
-				loadMoreResults();
-			}
-		}, options);
-
-		const currentLoadingRef = loadingRef.current;
-		if (currentLoadingRef) {
-			observer.observe(currentLoadingRef);
-		}
-
-		return () => {
-			if (currentLoadingRef) {
-				observer.disconnect();
-			}
-		};
-	}, [loadMoreResults, searching, hasMore]);
-
-	const handleSearch = useCallback((term: string) => {
-		if (!term.trim()) {
-			setSearchResults([]);
-			setSearching(false);
-			return;
-		}
-
-		setSearching(true);
-		setError('');
-
-		const performSearch = async () => {
-			try {
-				const results = await getArtworkData(term);
-				setSearchResults(results || []);
-			} catch (err) {
-				console.error('Search error:', err);
-				setError(
-					'An error occurred while searching. Please try again.',
-				);
-				setSearchResults([]);
-			} finally {
-				setSearching(false);
-			}
-		};
-
-		performSearch();
-	}, []);
-
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		setSearchTerm(value);
-		handleSearch(value);
-	};
-
+	// Fetch featured artworks
 	useEffect(() => {
 		const fetchFeaturedArtworks = async () => {
 			try {
 				setLoading(true);
-				setError(null);
-
 				const artworks = await getFeaturedArtworks();
 				setFeaturedArtworks(artworks);
 			} catch (error) {
@@ -214,6 +104,77 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 		};
 
 		fetchFeaturedArtworks();
+	}, []);
+
+	const handleSearch = useCallback(async (term: string) => {
+		// If search term is empty or too short, just clear results without hiding UI
+		if (!term.trim() || term.length < 2) {
+			setSearchResults([]);
+			setSearching(false);
+			return;
+		}
+
+		try {
+			setSearching(true);
+			setError(null);
+
+			const results = await getArtworkData(term);
+			if (Array.isArray(results)) {
+				const processedResults = results.map((item) => ({
+					...item,
+					matchScore: calculateMatchScore(item, term),
+				}));
+				processedResults.sort(
+					(a, b) => (b.matchScore || 0) - (a.matchScore || 0),
+				);
+				setSearchResults(processedResults);
+			} else {
+				setSearchResults([]);
+			}
+		} catch (err) {
+			console.error('Search error:', err);
+			setError(
+				err instanceof Error
+					? err.message
+					: 'An error occurred while searching',
+			);
+			setSearchResults([]);
+		} finally {
+			setSearching(false);
+		}
+	}, []);
+
+	const handleInputChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			const value = e.target.value;
+			setSearchTerm(value);
+
+			// Clear any existing timeout
+			if (searchTimeoutRef.current) {
+				window.clearTimeout(searchTimeoutRef.current);
+			}
+
+			// Only search if we have 2 or more characters
+			if (value.length >= 2) {
+				searchTimeoutRef.current = window.setTimeout(() => {
+					handleSearch(value);
+				}, 300);
+			} else {
+				// Clear results but don't hide UI for short search terms
+				setSearchResults([]);
+				setError(null);
+			}
+		},
+		[handleSearch],
+	);
+
+	// Cleanup timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (searchTimeoutRef.current) {
+				window.clearTimeout(searchTimeoutRef.current);
+			}
+		};
 	}, []);
 
 	return (
@@ -240,190 +201,160 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 							<Button
 								size='icon'
 								className='absolute right-0 h-12 w-12 rounded-none border-l-2'
-								onClick={() => handleSearch(searchTerm)}
 								disabled={searching}
 							>
 								{searching ? (
-									'Searching...'
+									<div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
 								) : (
 									<Search className='h-5 w-5' />
 								)}
-								<span className='sr-only'>Search</span>
 							</Button>
 						</div>
 
 						{searchTerm.length >= 2 && (
 							<div className='absolute w-full mt-2 bg-background border-2 shadow-lg z-50'>
-								<ScrollArea className='max-h-[400px] overflow-y-auto'>
-									<div className='scroll-area-viewport'>
-										<Table>
-											<TableHeader>
+								<ScrollArea className='max-h-[400px]'>
+									<Table>
+										<TableHeader>
+											<TableRow>
+												<TableHead className='w-[200px]'>
+													Artist
+												</TableHead>
+												<TableHead className='w-[180px]'>
+													Title
+												</TableHead>
+												<TableHead className='w-[150px]'>
+													Medium
+												</TableHead>
+												<TableHead className='w-[200px]'>
+													Description
+												</TableHead>
+												<TableHead className='w-[100px]'>
+													Image Status
+												</TableHead>
+											</TableRow>
+										</TableHeader>
+										<TableBody>
+											{searching ? (
 												<TableRow>
-													<TableHead className='w-[200px]'>
-														Artist
-													</TableHead>
-													<TableHead className='w-[180px]'>
-														Title
-													</TableHead>
-													<TableHead className='w-[150px]'>
-														Medium
-													</TableHead>
-													<TableHead className='w-[200px]'>
-														Description
-													</TableHead>
-													<TableHead className='w-[100px]'>
-														Image Status
-													</TableHead>
+													<TableCell
+														colSpan={5}
+														className='text-center py-4'
+													>
+														<div className='flex items-center justify-center gap-2'>
+															<div className='h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
+															Searching...
+														</div>
+													</TableCell>
 												</TableRow>
-											</TableHeader>
-											<TableBody>
-												{searching &&
-												searchResults.length === 0 ? (
-													<TableRow>
-														<TableCell
-															colSpan={5}
-															className='text-center py-4'
-														>
-															<div className='flex items-center justify-center gap-2'>
-																<div className='h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
-																Searching...
-															</div>
+											) : error ? (
+												<TableRow>
+													<TableCell
+														colSpan={5}
+														className='text-center py-4 text-red-500'
+													>
+														{error}
+													</TableCell>
+												</TableRow>
+											) : searchResults.length === 0 ? (
+												<TableRow>
+													<TableCell
+														colSpan={5}
+														className='text-center py-4'
+													>
+														No results found
+													</TableCell>
+												</TableRow>
+											) : (
+												searchResults.map((result) => (
+													<TableRow
+														key={result.id}
+														className='cursor-pointer hover:bg-muted/50'
+														onClick={() =>
+															onArtworkSelect(
+																result.id,
+															)
+														}
+													>
+														<TableCell>
+															{highlightMatch(
+																result.artist_title ||
+																	'Unknown',
+																searchTerm,
+															)}
 														</TableCell>
-													</TableRow>
-												) : error ? (
-													<TableRow>
-														<TableCell
-															colSpan={5}
-															className='text-center py-4 text-red-500'
-														>
-															{error}
-														</TableCell>
-													</TableRow>
-												) : searchResults.length ===
-												  0 ? (
-													<TableRow>
-														<TableCell
-															colSpan={5}
-															className='text-center py-4'
-														>
-															No results found
-														</TableCell>
-													</TableRow>
-												) : (
-													<>
-														{searchResults.map(
-															(result) => (
-																<TableRow
-																	key={
-																		result.id
+														<TableCell className='font-medium'>
+															{result.title && (
+																<TruncatedText
+																	content={
+																		result.title
 																	}
-																	className='cursor-pointer hover:bg-muted/50'
-																	onClick={() =>
-																		onArtworkSelect(
-																			result.id,
-																		)
+																	maxLength={
+																		35
 																	}
-																>
-																	<TableCell>
-																		{highlightMatch(
-																			result.artist_title ||
-																				'Unknown',
-																			searchTerm,
-																		)}
-																	</TableCell>
-																	<TableCell className='font-medium'>
-																		{result.title && (
-																			<TruncatedText
-																				content={
-																					result.title
-																				}
-																				maxLength={
-																					35
-																				}
-																			/>
-																		)}
-																	</TableCell>
-																	<TableCell>
-																		{result.medium_display && (
-																			<TruncatedText
-																				content={
-																					result.medium_display
-																				}
-																				maxLength={
-																					30
-																				}
-																			/>
-																		)}
-																	</TableCell>
-																	<TableCell>
-																		{result.description && (
-																			<TruncatedText
-																				content={stripHtmlTags(
-																					result.description,
-																				)}
-																				maxLength={
-																					40
-																				}
-																			/>
-																		)}
-																	</TableCell>
-																	<TableCell>
-																		{result.image_id ? (
-																			<span className='text-green-600'>
-																				Available
-																			</span>
-																		) : (
-																			<span className='text-red-600'>
-																				Not
-																				Available
-																			</span>
-																		)}
-																	</TableCell>
-																</TableRow>
-															),
-														)}
-														<TableRow
-															ref={loadingRef}
-														>
-															<TableCell
-																colSpan={5}
-																className='text-center py-2 text-sm text-muted-foreground'
-															>
-																{searching ? (
-																	<div className='flex items-center justify-center gap-2'>
-																		<div className='h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
-																		Loading
-																		more...
-																	</div>
-																) : hasMore ? (
-																	'Scroll for more results'
-																) : (
-																	'No more results'
-																)}
-															</TableCell>
-														</TableRow>
-													</>
-												)}
-											</TableBody>
-										</Table>
-									</div>
+																/>
+															)}
+														</TableCell>
+														<TableCell>
+															{result.medium_display && (
+																<TruncatedText
+																	content={
+																		result.medium_display
+																	}
+																	maxLength={
+																		30
+																	}
+																/>
+															)}
+														</TableCell>
+														<TableCell>
+															{result.description && (
+																<TruncatedText
+																	content={stripHtmlTags(
+																		result.description,
+																	)}
+																	maxLength={
+																		40
+																	}
+																/>
+															)}
+														</TableCell>
+														<TableCell>
+															{result.image_id ? (
+																<span className='text-green-600'>
+																	Available
+																</span>
+															) : (
+																<span className='text-red-600'>
+																	Not
+																	Available
+																</span>
+															)}
+														</TableCell>
+													</TableRow>
+												))
+											)}
+										</TableBody>
+									</Table>
 								</ScrollArea>
 							</div>
 						)}
 					</div>
-					<div className='mt-10 flex items-center justify-center gap-x-6'>
-						<Button className='rounded-none border-2 h-12 px-6'>
-							Surprise Me
-							<ArrowRight className='ml-2 h-4 w-4' />
-						</Button>
-						<Button
-							variant='outline'
-							className='rounded-none border-2 h-12 px-6'
-						>
-							Collections
-						</Button>
-					</div>
 				</div>
+
+				<div className='mt-10 flex items-center justify-center gap-x-6'>
+					<Button className='rounded-none border-2 h-12 px-6'>
+						Surprise Me
+						<ArrowRight className='ml-2 h-4 w-4' />
+					</Button>
+					<Button
+						variant='outline'
+						className='rounded-none border-2 h-12 px-6'
+					>
+						Collections
+					</Button>
+				</div>
+
 				{!searchTerm && (
 					<FeaturedArtworks
 						artworks={featuredArtworks}
