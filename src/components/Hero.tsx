@@ -6,6 +6,7 @@ import {
 	LocalArtwork,
 	getArtworkData,
 	getFeaturedArtworks,
+	getRandomArtwork,
 } from '@/config/api';
 import { FeaturedArtworks } from './FeaturedArtworks';
 import {
@@ -86,6 +87,7 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 	const [searching, setSearching] = useState(false);
+	const [isLoadingRandom, setIsLoadingRandom] = useState(false);
 	const searchTimeoutRef = useRef<number>();
 
 	// Fetch featured artworks
@@ -167,6 +169,20 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 		},
 		[handleSearch],
 	);
+
+	const handleSurpriseMe = async () => {
+		try {
+			setIsLoadingRandom(true);
+			const randomArtwork = await getRandomArtwork();
+			if (randomArtwork) {
+				onArtworkSelect(randomArtwork.id);
+			}
+		} catch (error) {
+			console.error('Error getting random artwork:', error);
+		} finally {
+			setIsLoadingRandom(false);
+		}
+	};
 
 	// Cleanup timeout on unmount
 	useEffect(() => {
@@ -343,10 +359,20 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 				</div>
 
 				<div className='mt-10 flex items-center justify-center gap-x-6'>
-					<Button className='rounded-none border-2 h-12 px-6'>
-						Surprise Me
-						<ArrowRight className='ml-2 h-4 w-4' />
-					</Button>
+						<Button 
+							className='rounded-none border-2 h-12 px-6'
+							onClick={handleSurpriseMe}
+							disabled={isLoadingRandom}
+						>
+							{isLoadingRandom ? (
+								<div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
+							) : (
+								<>
+									Surprise Me
+									<ArrowRight className='ml-2 h-4 w-4' />
+								</>
+							)}
+						</Button>
 					<Button
 						variant='outline'
 						className='rounded-none border-2 h-12 px-6'
