@@ -244,3 +244,41 @@ export const getApiUrl = (endpoint: keyof typeof API_CONFIG) => {
 export const getDetailImageUrl = (imageId: string) => {
 	return getImageUrl(imageId);
 };
+
+export const getRandomArtwork = async (): Promise<LocalArtwork | null> => {
+	try {
+		// Query artworks with required fields to ensure complete metadata
+		const response = await fetchWithTimeout(
+			`${API_CONFIG.BASE_URL}/artworks/search?q=&fields=id,title,artist_title,medium_display,description,image_id,dimensions_detail,thumbnail&limit=100`,
+			API_TIMEOUT
+		);
+
+		if (!response.ok) {
+			throw new Error(`API request failed with status ${response.status}`);
+		}
+
+		const data = await response.json();
+		
+		// Filter artworks to only include ones with complete metadata
+		const completeArtworks = data.data.filter((item: ApiArtwork) => 
+			item.title && 
+			item.artist_title && 
+			item.medium_display && 
+			item.description && 
+			item.image_id
+		);
+
+		if (completeArtworks.length === 0) {
+			return null;
+		}
+
+		// Select a random artwork from the filtered list
+		const randomIndex = Math.floor(Math.random() * completeArtworks.length);
+		const randomArtwork = completeArtworks[randomIndex];
+
+		return processArtwork(randomArtwork);
+	} catch (error) {
+		console.error('Error fetching random artwork:', error);
+		throw new Error('Failed to fetch random artwork. Please try again later.');
+	}
+};
