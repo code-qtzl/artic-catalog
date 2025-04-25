@@ -3,19 +3,24 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-    include: ['@modelcontextprotocol/sdk']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/@modelcontextprotocol\/sdk/]
-    }
-  }
+	plugins: [react()],
+	resolve: {
+		alias: {
+			'@': path.resolve(__dirname, './src'),
+		},
+		mainFields: ['module', 'main'],
+		conditions: ['import', 'module', 'require', 'default'],
+	},
+	optimizeDeps: {
+		exclude: ['lucide-react'],
+		esbuildOptions: {
+			target: 'esnext',
+		},
+	},
+	build: {
+		target: 'esnext',
+		rollupOptions: {
+			external: [/@modelcontextprotocol\/sdk/],
+		},
+	},
 });
