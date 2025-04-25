@@ -11,5 +11,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
+    include: ['@modelcontextprotocol/sdk']
   },
+  build: {
+    commonjsOptions: {
+      include: [/@modelcontextprotocol\/sdk/]
+    }
+  }
 });
