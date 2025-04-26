@@ -21,12 +21,17 @@ export async function POST(request: Request) {
 			system: "You are an AI assistant helping users learn about artworks in the Art Institute of Chicago's collection. Provide engaging and informative responses about art history, artists, and specific works in the collection.",
 		});
 
+		if (!response.content || response.content.length === 0) {
+			throw new Error('Empty response from Claude');
+		}
+
 		return new Response(
 			JSON.stringify({
 				content:
 					response.content[0].type === 'text'
 						? response.content[0].text
 						: null,
+				error: null,
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
@@ -35,7 +40,13 @@ export async function POST(request: Request) {
 	} catch (error) {
 		console.error('Error processing chat:', error);
 		return new Response(
-			JSON.stringify({ error: 'Failed to process chat request' }),
+			JSON.stringify({
+				content: null,
+				error:
+					error instanceof Error
+						? error.message
+						: 'Failed to process chat request',
+			}),
 			{
 				status: 500,
 				headers: { 'Content-Type': 'application/json' },

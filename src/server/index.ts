@@ -14,7 +14,7 @@ if (!process.env.ANTHROPIC_API_KEY) {
 }
 
 export const app = express();
-export const port = process.env.PORT || 3000;
+export const port = process.env.PORT || 3001; // Changed to 3001
 
 app.use(cors());
 app.use(express.json());

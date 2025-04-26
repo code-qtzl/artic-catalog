@@ -27,19 +27,21 @@ class ChatService {
 				body: JSON.stringify({ message }),
 			});
 
+			const data = await response.json();
+
 			if (!response.ok) {
-				throw new Error('Failed to send message');
+				throw new Error(data.error || 'Failed to send message');
 			}
 
-			const data = await response.json();
 			if (data.error) {
 				throw new Error(data.error);
 			}
 
-			return (
-				data.content ||
-				'I apologize, but I received an unexpected response format.'
-			);
+			if (!data.content) {
+				throw new Error('Received empty response from server');
+			}
+
+			return data.content;
 		} catch (error) {
 			console.error('Error sending message:', error);
 			throw error;

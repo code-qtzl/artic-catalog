@@ -10,8 +10,8 @@
 			"@/*": ["./src/*"]
 		},
 		"target": "ES2022",
-		"module": "Node16",
-		"moduleResolution": "Node16",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"outDir": "./build",
 		"rootDir": "./",
 		"strict": true,
@@ -19,6 +19,6 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"include": ["index.ts"],
+	"include": ["index.ts", "src/**/*.ts", "src/**/*.tsx"],
 	"exclude": ["node_modules"]
 }
