@@ -1,76 +1,50 @@
-interface MCPResponse {
-    content: string;
-}
-
-class MCPClient {
-    private serverName: string;
-    private onError: (error: Error) => void;
-
-    constructor({ serverName, onError }: { serverName: string; onError: (error: Error) => void }) {
-        this.serverName = serverName;
-        this.onError = onError;
-    }
-
-    async send({ type, content }: { type: string; content: string }): Promise<MCPResponse> {
-        try {
-            const response = await fetch('http://localhost:3000/mcp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    server: this.serverName,
-                    type,
-                    content,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`MCP request failed: ${response.statusText}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            const err = error instanceof Error ? error : new Error(String(error));
-            this.onError(err);
-            throw err;
-        }
-    }
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
+if (!ANTHROPIC_API_KEY) {
+	throw new Error(
+		'Anthropic API key is not set in the environment variables.',
+	);
 }
 
 class ChatService {
-    private static instance: ChatService;
-    private mcpClient: MCPClient;
+	private static instance: ChatService;
 
-    private constructor() {
-        this.mcpClient = new MCPClient({
-            serverName: 'artic-museum',
-            onError: (error) => {
-                console.error('MCP Error:', error);
-            }
-        });
-    }
+	private constructor() {}
 
-    public static getInstance(): ChatService {
-        if (!ChatService.instance) {
-            ChatService.instance = new ChatService();
-        }
-        return ChatService.instance;
-    }
+	public static getInstance(): ChatService {
+		if (!ChatService.instance) {
+			ChatService.instance = new ChatService();
+		}
+		return ChatService.instance;
+	}
 
-    public async sendMessage(message: string): Promise<string> {
-        try {
-            const response = await this.mcpClient.send({
-                type: 'chat',
-                content: message,
-            });
+	public async sendMessage(message: string): Promise<string> {
+		try {
+			const response = await fetch('/api/chat', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ message }),
+			});
 
-            return response.content;
-        } catch (error) {
-            console.error('Error sending message:', error);
-            throw error;
-        }
-    }
+			if (!response.ok) {
+				throw new Error('Failed to send message');
+			}
+
+			const data = await response.json();
+			if (data.error) {
+				throw new Error(data.error);
+			}
+
+			return (
+				data.content ||
+				'I apologize, but I received an unexpected response format.'
+			);
+		} catch (error) {
+			console.error('Error sending message:', error);
+			throw error;
+		}
+	}
 }
 
 export const chatService = ChatService.getInstance();
