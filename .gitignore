@@ -3,3 +3,5 @@ node_modules
 public
 .env.local
 .env.development
+.env.example
+package-lock.json

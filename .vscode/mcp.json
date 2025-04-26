@@ -1,8 +1,8 @@
 {
 	"servers": {
 		"artic-museum": {
-			"command": "npx",
-			"args": ["-y", "artic-mcp"]
+			"command": "npm",
+			"args": ["run", "server"]
 		}
 	}
 }
