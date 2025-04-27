@@ -72,6 +72,7 @@ function App() {
 					<Chat
 						isOpen={isChatOpen}
 						onClose={() => setIsChatOpen(false)}
+						selectedArtworkId={viewState.artworkId ?? undefined}
 					/>
 				</div>
 			</div>
