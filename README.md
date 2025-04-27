@@ -2,6 +2,12 @@
 
 This artic-catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu).
 
+<div align="center">
+  <img src="img/demo-home-img.png" alt="Artic Catalog Preview" width="600"/>
+  <p><em>Artic Catalog Preview</em></p>
+
+</div>
+
 ## Objective
 
 The objective of this project is to create an interactive experience for exploring the Art Institute of Chicago's collection through a modern web interface and an AI-powered chat assistant.
@@ -11,6 +17,16 @@ The objective of this project is to create an interactive experience for explori
 -   Browse the extensive artwork collection
 -   Art Institute Assistant: An AI-powered chat interface for artwork discovery and information
 -   Detailed artwork information and high-resolution images
+
+<div align="center">
+  <img src="img/demo-search.gif" alt="Artic Catalog Search" width="600"/>
+  <p><em>Artic Catalog Search</em></p>
+</div>
+
+<div align="center">
+  <img src="img/demo-aia.gif" alt="Artic Catalog Assistant" width="600"/>
+  <p><em>Artic Catalog Assistant</em></p>
+</div>
 
 ## Technical Stack
 
