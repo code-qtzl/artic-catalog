@@ -77,7 +77,7 @@ export function Chat({ onClose, isOpen, selectedArtworkId }: ChatProps) {
 		>
 			<div className='flex flex-col h-full'>
 				<div className='flex justify-between items-center p-4 border-b'>
-					<h3 className='font-semibold'>Art Institute Assistant</h3>
+					<h3 className='font-semibold'>Artic Catalog Assistant</h3>
 					<Button variant='ghost' size='sm' onClick={onClose}>
 						✕
 					</Button>

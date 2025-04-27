@@ -15,7 +15,7 @@ The objective of this project is to create an interactive experience for explori
 ## Features
 
 -   Browse the extensive artwork collection
--   Art Institute Assistant: An AI-powered chat interface for artwork discovery and information
+-   Art Catalog Assistant: An AI-powered chat interface for artwork discovery and information
 -   Detailed artwork information and high-resolution images
 
 <div align="center">
@@ -75,7 +75,7 @@ yarn dev
 
 The application will be available at `http://localhost:5173`
 
-### Using the Art Institute Assistant
+### Using the Art Catalog Assistant
 
 Once the server is running, the AI chat assistant will be available in the application interface. You can interact with it to:
 
