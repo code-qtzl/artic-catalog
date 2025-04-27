@@ -1,5 +1,5 @@
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { getImageUrl } from '@/config/api';
 
 interface ArtCardProps {
