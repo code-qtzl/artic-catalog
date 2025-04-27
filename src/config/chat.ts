@@ -17,14 +17,44 @@ class ChatService {
 		return ChatService.instance;
 	}
 
-	public async sendMessage(message: string): Promise<string> {
+	private async getArtworkContext(artworkId: number): Promise<string> {
 		try {
+			const response = await fetch(
+				`https://api.artic.edu/api/v1/artworks/${artworkId}?fields=id,title,artist_title,date_display,medium_display,dimensions,description`,
+			);
+			const data = await response.json();
+			const artwork = data.data;
+
+			return `You are currently viewing: "${artwork.title}" by ${
+				artwork.artist_title || 'Unknown Artist'
+			}
+Date: ${artwork.date_display || 'Unknown'}
+Medium: ${artwork.medium_display || 'Unknown'}
+Description: ${artwork.description || 'No description available'}\n\n`;
+		} catch (error) {
+			console.error('Error fetching artwork context:', error);
+			return '';
+		}
+	}
+
+	public async sendMessage(
+		message: string,
+		artworkId?: number,
+	): Promise<string> {
+		try {
+			let contextualizedMessage = message;
+
+			if (artworkId) {
+				const artworkContext = await this.getArtworkContext(artworkId);
+				contextualizedMessage = `${artworkContext}User question: ${message}`;
+			}
+
 			const response = await fetch('/api/chat', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ message }),
+				body: JSON.stringify({ message: contextualizedMessage }),
 			});
 
 			const data = await response.json();

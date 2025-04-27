@@ -71,7 +71,7 @@ export function ArtworkDetail({ artworkId, onBack }: ArtworkDetailProps) {
 		: '';
 
 	return (
-		<div className='container mx-auto mt-8 px-4'>
+		<div className='container mx-auto mt-8 mb-10 px-4'>
 			<Button variant='ghost' onClick={onBack} className='mb-6'>
 				<ArrowLeft className='mr-2 h-4 w-4' />
 				Back

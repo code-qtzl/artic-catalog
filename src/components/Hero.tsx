@@ -205,6 +205,21 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 					<h1 className='text-4xl font-bold tracking-tight sm:text-6xl'>
 						Artic Catalog
 					</h1>
+					<p className='mt-6 text-lg leading-8 text-muted-foreground'>
+						Discover and explore a vast collection of artworks from
+						various artists and mediums. The work is from the
+						collection of{' '}
+						<a
+							href='https://api.artic.edu/docs/'
+							target='_blank'
+							rel='noopener noreferrer'
+							className='text-l underline font-bold bg-gradient-to-br from-orange-600 via-yellow-500 to-orange-500
+						 bg-clip-text text-transparent '
+						>
+							The Art Institute of Chicago
+						</a>
+						.
+					</p>
 					<div className='mt-10 relative max-w-2xl mx-auto'>
 						<div className='flex items-center'>
 							<Input
@@ -359,20 +374,20 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 				</div>
 
 				<div className='mt-10 flex items-center justify-center gap-x-6'>
-						<Button 
-							className='rounded-none border-2 h-12 px-6'
-							onClick={handleSurpriseMe}
-							disabled={isLoadingRandom}
-						>
-							{isLoadingRandom ? (
-								<div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
-							) : (
-								<>
-									Surprise Me
-									<ArrowRight className='ml-2 h-4 w-4' />
-								</>
-							)}
-						</Button>
+					<Button
+						className='rounded-none border-2 h-12 px-6'
+						onClick={handleSurpriseMe}
+						disabled={isLoadingRandom}
+					>
+						{isLoadingRandom ? (
+							<div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
+						) : (
+							<>
+								Surprise Me
+								<ArrowRight className='ml-2 h-4 w-4' />
+							</>
+						)}
+					</Button>
 					<Button
 						variant='outline'
 						className='rounded-none border-2 h-12 px-6'

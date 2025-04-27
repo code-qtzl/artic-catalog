@@ -13,9 +13,10 @@ interface Message {
 interface ChatProps {
 	onClose: () => void;
 	isOpen: boolean;
+	selectedArtworkId?: number;
 }
 
-export function Chat({ onClose, isOpen }: ChatProps) {
+export function Chat({ onClose, isOpen, selectedArtworkId }: ChatProps) {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [input, setInput] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +34,11 @@ export function Chat({ onClose, isOpen }: ChatProps) {
 		setIsLoading(true);
 
 		try {
-			const response = await chatService.sendMessage(userMessage.content);
+			// Include artwork context in the message
+			const response = await chatService.sendMessage(
+				userMessage.content,
+				selectedArtworkId,
+			);
 
 			setMessages((prev) => [
 				...prev,
