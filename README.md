@@ -3,7 +3,7 @@
 This artic-catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu).
 
 <div align="center">
-  <img src="img/demo-home-img.png" alt="Artic Catalog Preview" width="600"/>
+  <img src="img/home-lightdark-mode.gif" alt="Artic Catalog Preview" width="600"/>
   <p><em>Artic Catalog Preview</em></p>
 
 </div>
@@ -33,7 +33,7 @@ The objective of this project is to create an interactive experience for explori
 -   Frontend: React with TypeScript
 -   Styling: Tailwind CSS
 -   Build Tool: Vite
--   AI Integration: Custom chat implementation
+-   AI Integration: Custom chat implementation of Anthropic's Claude API
 
 ## Getting Started
 
@@ -41,6 +41,15 @@ The objective of this project is to create an interactive experience for explori
 
 -   Node.js (v18 or higher)
 -   npm or yarn
+
+### Environment Variables
+
+Required environment variables:
+
+```env
+VITE_API_URL=https://api.artic.edu/api/v1
+VITE_ANTHROPIC_API_KEY=your_anthropic_api_key
+```
 
 ### Local Setup
 
@@ -55,8 +64,6 @@ cd artic-catalog
 
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. Create a `.env` file in the root directory
@@ -69,8 +76,6 @@ cp .env.example .env
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 The application will be available at `http://localhost:5173`
