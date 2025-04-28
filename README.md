@@ -56,7 +56,7 @@ VITE_ANTHROPIC_API_KEY=your_anthropic_api_key
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/artic-catalog.git
+git clone https://github.com/code-qtzl/artic-catalog.git
 cd artic-catalog
 ```
 
