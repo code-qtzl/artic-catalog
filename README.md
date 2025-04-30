@@ -42,15 +42,6 @@ The objective of this project is to create an interactive experience for explori
 -   Node.js (v18 or higher)
 -   npm or yarn
 
-### Environment Variables
-
-Required environment variables:
-
-```env
-VITE_API_URL=https://api.artic.edu/api/v1
-VITE_ANTHROPIC_API_KEY=your_anthropic_api_key
-```
-
 ### Local Setup
 
 1. Clone the repository
@@ -79,6 +70,13 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
+
+### Environment Variables
+
+Required environment variables:
+
+-   Base URL found here: https://api.artic.edu/docs/
+-   Anthropic API key: https://docs.anthropic.com/en/home
 
 ### Using the Art Catalog Assistant
 
