@@ -1,4 +1,4 @@
-# [WIP] artic-catalog
+# artic-catalog
 
 This artic-catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu).
 
