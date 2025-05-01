@@ -1,8 +1,0 @@
-{
-	"servers": {
-		"artic-museum": {
-			"command": "npm",
-			"args": ["run", "server"]
-		}
-	}
-}
