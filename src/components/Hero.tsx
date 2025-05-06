@@ -221,155 +221,163 @@ export function Hero({ onArtworkSelect }: HeroProps) {
 						.
 					</p>
 					<div className='mt-10 relative max-w-2xl mx-auto'>
-						<div className='flex items-center'>
-							<Input
-								type='search'
-								placeholder='Search artworks, artists, description...'
-								className='h-12 text-base border-2 rounded-none pl-4 pr-12'
-								value={searchTerm}
-								onChange={handleInputChange}
-							/>
-							<Button
-								size='icon'
-								className='absolute right-0 h-12 w-12 rounded-none border-l-2'
-								disabled={searching}
-							>
-								{searching ? (
-									<div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
-								) : (
-									<Search className='h-5 w-5' />
-								)}
-							</Button>
-						</div>
+						<search
+							role='search'
+							aria-label='Search artworks, artists, description'
+						>
+							<div className='flex items-center'>
+								<Input
+									type='search'
+									placeholder='Search artworks, artists, description...'
+									className='h-12 text-base border-2 rounded-none pl-4 pr-12'
+									value={searchTerm}
+									onChange={handleInputChange}
+								/>
+								<Button
+									size='icon'
+									className='absolute right-0 h-12 w-12 rounded-none border-l-2'
+									disabled={searching}
+								>
+									{searching ? (
+										<div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
+									) : (
+										<Search className='h-5 w-5' />
+									)}
+								</Button>
+							</div>
 
-						{searchTerm.length >= 2 && (
-							<div className='absolute w-full mt-2 bg-background border-2 shadow-lg z-50'>
-								<ScrollArea className='max-h-[400px]'>
-									<Table>
-										<TableHeader>
-											<TableRow>
-												<TableHead className='w-[200px]'>
-													Artist
-												</TableHead>
-												<TableHead className='w-[180px]'>
-													Title
-												</TableHead>
-												<TableHead className='w-[150px]'>
-													Medium
-												</TableHead>
-												<TableHead className='w-[200px]'>
-													Description
-												</TableHead>
-												<TableHead className='w-[100px]'>
-													Image Status
-												</TableHead>
-											</TableRow>
-										</TableHeader>
-										<TableBody>
-											{searching ? (
+							{searchTerm.length >= 2 && (
+								<div className='absolute w-full mt-2 bg-background border-2 shadow-lg z-50'>
+									<ScrollArea className='max-h-[400px]'>
+										<Table>
+											<TableHeader>
 												<TableRow>
-													<TableCell
-														colSpan={5}
-														className='text-center py-4'
-													>
-														<div className='flex items-center justify-center gap-2'>
-															<div className='h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
-															Searching...
-														</div>
-													</TableCell>
+													<TableHead className='w-[200px]'>
+														Artist
+													</TableHead>
+													<TableHead className='w-[180px]'>
+														Title
+													</TableHead>
+													<TableHead className='w-[150px]'>
+														Medium
+													</TableHead>
+													<TableHead className='w-[200px]'>
+														Description
+													</TableHead>
+													<TableHead className='w-[100px]'>
+														Image Status
+													</TableHead>
 												</TableRow>
-											) : error ? (
-												<TableRow>
-													<TableCell
-														colSpan={5}
-														className='text-center py-4 text-red-500'
-													>
-														{error}
-													</TableCell>
-												</TableRow>
-											) : searchResults.length === 0 ? (
-												<TableRow>
-													<TableCell
-														colSpan={5}
-														className='text-center py-4'
-													>
-														No results found
-													</TableCell>
-												</TableRow>
-											) : (
-												searchResults.map((result) => (
-													<TableRow
-														key={result.id}
-														className='cursor-pointer hover:bg-muted/50'
-														onClick={() =>
-															onArtworkSelect(
-																result.id,
-															)
-														}
-													>
-														<TableCell>
-															{highlightMatch(
-																result.artist_title ||
-																	'Unknown',
-																searchTerm,
-															)}
-														</TableCell>
-														<TableCell className='font-medium'>
-															{result.title && (
-																<TruncatedText
-																	content={
-																		result.title
-																	}
-																	maxLength={
-																		35
-																	}
-																/>
-															)}
-														</TableCell>
-														<TableCell>
-															{result.medium_display && (
-																<TruncatedText
-																	content={
-																		result.medium_display
-																	}
-																	maxLength={
-																		30
-																	}
-																/>
-															)}
-														</TableCell>
-														<TableCell>
-															{result.description && (
-																<TruncatedText
-																	content={stripHtmlTags(
-																		result.description,
-																	)}
-																	maxLength={
-																		40
-																	}
-																/>
-															)}
-														</TableCell>
-														<TableCell>
-															{result.image_id ? (
-																<span className='text-green-600'>
-																	Available
-																</span>
-															) : (
-																<span className='text-red-600'>
-																	Not
-																	Available
-																</span>
-															)}
+											</TableHeader>
+											<TableBody>
+												{searching ? (
+													<TableRow>
+														<TableCell
+															colSpan={5}
+															className='text-center py-4'
+														>
+															<div className='flex items-center justify-center gap-2'>
+																<div className='h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent'></div>
+																Searching...
+															</div>
 														</TableCell>
 													</TableRow>
-												))
-											)}
-										</TableBody>
-									</Table>
-								</ScrollArea>
-							</div>
-						)}
+												) : error ? (
+													<TableRow>
+														<TableCell
+															colSpan={5}
+															className='text-center py-4 text-red-500'
+														>
+															{error}
+														</TableCell>
+													</TableRow>
+												) : searchResults.length ===
+												  0 ? (
+													<TableRow>
+														<TableCell
+															colSpan={5}
+															className='text-center py-4'
+														>
+															No results found
+														</TableCell>
+													</TableRow>
+												) : (
+													searchResults.map(
+														(result) => (
+															<TableRow
+																key={result.id}
+																className='cursor-pointer hover:bg-muted/50'
+																onClick={() =>
+																	onArtworkSelect(
+																		result.id,
+																	)
+																}
+															>
+																<TableCell>
+																	{highlightMatch(
+																		result.artist_title ||
+																			'Unknown',
+																		searchTerm,
+																	)}
+																</TableCell>
+																<TableCell className='font-medium'>
+																	{result.title && (
+																		<TruncatedText
+																			content={
+																				result.title
+																			}
+																			maxLength={
+																				35
+																			}
+																		/>
+																	)}
+																</TableCell>
+																<TableCell>
+																	{result.medium_display && (
+																		<TruncatedText
+																			content={
+																				result.medium_display
+																			}
+																			maxLength={
+																				30
+																			}
+																		/>
+																	)}
+																</TableCell>
+																<TableCell>
+																	{result.description && (
+																		<TruncatedText
+																			content={stripHtmlTags(
+																				result.description,
+																			)}
+																			maxLength={
+																				40
+																			}
+																		/>
+																	)}
+																</TableCell>
+																<TableCell>
+																	{result.image_id ? (
+																		<span className='text-green-600'>
+																			Available
+																		</span>
+																	) : (
+																		<span className='text-red-600'>
+																			Not
+																			Available
+																		</span>
+																	)}
+																</TableCell>
+															</TableRow>
+														),
+													)
+												)}
+											</TableBody>
+										</Table>
+									</ScrollArea>
+								</div>
+							)}
+						</search>
 					</div>
 				</div>
 
