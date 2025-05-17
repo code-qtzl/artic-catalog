@@ -33,7 +33,8 @@ The objective of this project is to create an interactive experience for explori
 -   Frontend: React with TypeScript
 -   Styling: Tailwind CSS
 -   Build Tool: Vite
--   AI Integration: Custom chat implementation of Anthropic's Claude API
+-   MCP Server: [artic-mcp](https://mcp.so/server/artic-mcp/mikechao)
+-   AI Integration: Custom chat implementation of [Anthropic's Claude API](https://www.anthropic.com/api)
 
 ## Getting Started
 
@@ -63,7 +64,13 @@ npm install
 cp .env.example .env
 ```
 
-4. Start the development server
+4. Start the Anthropic server
+
+```bash
+npm run server
+```
+
+5. Start the development server
 
 ```bash
 npm run dev
