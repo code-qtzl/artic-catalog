@@ -92,3 +92,9 @@ Once the server is running, the AI chat assistant will be available in the appli
 -   Search for artworks
 -   Get artwork details
 -   Discover related pieces
+
+### Support
+
+Having issues or want to provide feedback? Reach out here:
+
+-   a.a.zepeda003[at]gmail.com
