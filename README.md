@@ -64,13 +64,19 @@ npm install
 cp .env.example .env
 ```
 
-4. Start the Anthropic server
+4. Add Anthropic API Key
+
+```bash
+"server": ANTHROPIC_API_KEY=_API_KEY_ NODE_ENV=development tsx watch src/server/index.ts"
+```
+
+5. Start the Anthropic server
 
 ```bash
 npm run server
 ```
 
-5. Start the development server
+6. Start the development server
 
 ```bash
 npm run dev
