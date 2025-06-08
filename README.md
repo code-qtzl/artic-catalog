@@ -101,6 +101,6 @@ Once the server is running, the AI chat assistant will be available in the appli
 
 ### Support
 
-Having issues or want to provide feedback? Reach out here:
+Questions, feedback, or want to see a working demo? Reach out here.
 
 -   a.a.zepeda003[at]gmail.com
