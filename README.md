@@ -4,17 +4,15 @@
   <img src="img/ai-banner.png" alt="Art Institute of Chicago AI Agent" width="300"/>
 </div>
 
-This artic-catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu).
+## Objective
+
+The objective of this project is to create an interactive experience for exploring the Art Institute of Chicago's collection through a modern web interface and an AI-powered chat assistant. Artic-Catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu). Additionally, this project provided an opportunity to learn about and implement Model Context Protocol (MCP) to explore the developer experience of building AI-powered applications.
 
 <div align="center">
   <img src="img/home-lightdark-mode.gif" alt="Artic Catalog Preview" width="600"/>
   <p><em>Artic Catalog Preview</em></p>
 
 </div>
-
-## Objective
-
-The objective of this project is to create an interactive experience for exploring the Art Institute of Chicago's collection through a modern web interface and an AI-powered chat assistant.
 
 ## Features
 
