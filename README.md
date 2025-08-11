@@ -1,5 +1,9 @@
 # artic-catalog
 
+<div align="left">
+  <img src="img/ai-banner.png" alt="Art Institute of Chicago AI Agent" width="300"/>
+</div>
+
 This artic-catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu).
 
 <div align="center">
