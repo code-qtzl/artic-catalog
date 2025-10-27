@@ -11,7 +11,7 @@ The objective of this project is to create an interactive experience for explori
 Veiw Demo: https://artic-catalog-plus-9k2d.vercel.app/
 
 > [!NOTE]
-> Since this project uses Anthropic's API. Things can get price real quick with queries to the Chat assistant. So you will need some credentials, but no worries I'm happy to share! Just send me a message here, a.a.zepeda003[@]gmail.com
+> Since this project uses Anthropic’s API, things can get pricey real quick with queries to the chat assistant. You’ll need some credentials, but no worries, I’m happy to share! Just send me a message at a.a.zepeda003[@]gmail.com.
 
 <div align="center">
   <img src="img/home-lightdark-mode.gif" alt="Artic Catalog Preview" width="600"/>
