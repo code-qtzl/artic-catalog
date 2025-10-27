@@ -77,7 +77,7 @@ cp .env
 "server": ANTHROPIC_API_KEY=_APIKEYHERE_ NODE_ENV=development tsx watch src/server/index.ts"
 ```
 
-5. Start the Anthropic server
+5. Start the server
 
 ```bash
 npm run server
