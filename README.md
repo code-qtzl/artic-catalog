@@ -6,7 +6,12 @@
 
 ## Objective
 
-The objective of this project is to create an interactive experience for exploring the Art Institute of Chicago's collection through a modern web interface and an AI-powered chat assistant. Artic-Catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu). Additionally, this project provided an opportunity to learn about and implement Model Context Protocol (MCP) to explore the developer experience of building AI-powered applications.
+The objective of this project is to create an interactive experience for exploring the Art Institute of Chicago's collection through a modern web interface and an AI-powered chat assistant. Artic-Catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu). Additionally, this project provided an opportunity to learn about and implement Model Context Protocol (MCP) to explore the developer experience.
+
+Veiw Demo: https://artic-catalog-plus-9k2d.vercel.app/
+
+> [!NOTE]
+> Since this project uses Anthropic's API. Things can get price real quick with queries to the Chat assistant. So you will need some credentials, but no worries I'm happy to share! Just send me a message here, a.a.zepeda003[@]gmail.com
 
 <div align="center">
   <img src="img/home-lightdark-mode.gif" alt="Artic Catalog Preview" width="600"/>
@@ -63,7 +68,7 @@ npm install
 3. Create a `.env` file in the root directory
 
 ```bash
-cp .env.example .env
+cp .env
 ```
 
 4. Add Anthropic API Key
