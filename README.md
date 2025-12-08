@@ -8,8 +8,6 @@
 
 The objective of this project is to create an interactive experience for exploring the Art Institute of Chicago's collection through a modern web interface and an AI-powered chat assistant. Artic-Catalog is a web application for viewing the artwork collection of the [Art Institute of Chicago](https://www.artic.edu). Additionally, this project provided an opportunity to learn about and implement Model Context Protocol (MCP) to explore the developer experience.
 
-Veiw Demo: https://artic-catalog-plus-9k2d.vercel.app/
-
 > [!NOTE]
 > Since this project uses Anthropic’s API, things can get pricey real quick with queries to the chat assistant. You’ll need some credentials, but no worries, I’m happy to share! Just send me a message at a.a.zepeda003[@]gmail.com.
 
